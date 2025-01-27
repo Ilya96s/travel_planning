@@ -17,16 +17,20 @@ spring:
       path: /h2-console
 #      http://localhost:8081/h2-console
 
-
   sql:
     init:
       mode: always
       schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
 server:
   port: 8081
 
 application:
   config:
-    attraction-url: http://localhost:8080/api/v1/attractions
+    attraction-url: http://attraction-service/api/v1/attractions
