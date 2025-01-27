@@ -1,17 +1,18 @@
 package ru.jg.attractions.service.impl;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.jg.attractions.exception.AttractionNotFoundException;
 import ru.jg.attractions.mapper.AttractionMapper;
 import ru.jg.attractions.model.Attraction;
 import ru.jg.attractions.payload.AttractionResponseDto;
+import ru.jg.attractions.repository.AttractionRepository;
 import ru.jg.attractions.service.AttractionService;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -20,10 +21,12 @@ public class AttractionServiceImpl implements AttractionService {
 
     private final AttractionMapper attractionMapper;
 
+    private final AttractionRepository attractionRepository;
+
     private static Map<Long, Attraction> attractions = new HashMap<>();
 
     static {
-        attractions.put(1L, new Attraction(1L,
+        attractions.put(11L, new Attraction(11L,
                 "Эйфелева башня",
                 "Париж",
                 "Знаменитая башня высотой 330 метров, символ Франции.")
@@ -31,12 +34,13 @@ public class AttractionServiceImpl implements AttractionService {
     }
 
     public AttractionResponseDto getAttraction(Long id) {
-        if (attractions.containsKey(id)) {
+        Optional<Attraction> attraction = attractionRepository.findById(id);
+        if (attraction.isPresent()) {
             log.info("Attraction with id {} found", id);
-            return attractionMapper.fromEntityToDto(attractions.get(id));
+            return attractionMapper.fromEntityToDto(attraction.get());
         } else {
             log.info("Attraction with id {} not found", id);
-            throw new IllegalArgumentException("Attraction with id " + id + " not found");
+            throw new AttractionNotFoundException("Attraction with id " + id + " not found");
         }
     }
 }
