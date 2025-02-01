@@ -10,7 +10,7 @@ import ru.jg.attractions.exception.ErrorResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(AttractionNotFoundException.class)
     public ErrorResponse handleAttractionNotFoundException(AttractionNotFoundException ex) {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());

@@ -1,7 +1,14 @@
 spring:
   application:
     name: travel-plans-service
-
+  cloud:
+    openfeign:
+      client:
+        config:
+          attraction-service:
+            connectTimeout: 10000  # Таймаут установки соединения (10 сек)
+            readTimeout: 60000  # Таймаут ожидания ответа (60 сек)
+            error-decoder: ru.jg.travelplans.handler.AttractionErrorDecoder
   datasource:
     url: jdbc:h2:mem:travel
     driverClassName: org.h2.Driver
@@ -15,7 +22,7 @@ spring:
     console:
       enabled: true
       path: /h2-console
-#      http://localhost:8081/h2-console
+  #      http://localhost:8081/h2-console
 
   sql:
     init:

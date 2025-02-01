@@ -1,4 +1,4 @@
-package ru.jg.travelplans.payload;
+package ru.jg.travelplans.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

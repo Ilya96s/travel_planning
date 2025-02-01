@@ -1,4 +1,4 @@
-package ru.jg.travelplans.payload;
+package ru.jg.travelplans.dto;
 
 public record AttractionResponseDto(Long id,
                                     String name,

@@ -7,10 +7,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class AttractionNotFoundException extends RuntimeException {
 
-    private final String code;
-
-    public AttractionNotFoundException(String code, String message) {
+    public AttractionNotFoundException(String message) {
         super(message);
-        this.code = code;
     }
 }
