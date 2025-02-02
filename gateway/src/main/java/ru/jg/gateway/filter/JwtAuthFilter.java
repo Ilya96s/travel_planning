@@ -1,5 +1,6 @@
 package ru.jg.gateway.filter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -14,14 +15,14 @@ import reactor.core.publisher.Mono;
 @Component
 public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Config> {
 
-    private final WebClient webClient;
-
     @Value("${auth.server.validate-token-url}")
     private String validateTokenUrl;
 
-    public JwtAuthFilter(WebClient webClient) {
+    @Autowired
+    private WebClient.Builder webClient;
+
+    public JwtAuthFilter() {
         super(Config.class);
-        this.webClient = webClient;
     }
 
 
@@ -33,7 +34,7 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
                 return onError(exchange, "Missing Token");
             }
 
-            return webClient.get()
+            return webClient.build().get()
                     .uri(validateTokenUrl)
                     .headers(headers -> headers.setBearerAuth(token))
                     .retrieve()
@@ -44,7 +45,7 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
                         }
                         return onError(exchange, "Invalid Token");
                     })
-                    .onErrorResume(e -> onError(exchange, "Authorization server unavailable"));
+                    .onErrorResume(e -> onError(exchange, "Authorization server unavailable: " + e.getMessage()));
 
         });
     }

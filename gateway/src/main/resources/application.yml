@@ -1,6 +1,4 @@
 spring:
-  application:
-    name: api-gateway
   cloud:
     gateway:
       discovery:
@@ -9,24 +7,27 @@ spring:
           lower-case-service-id: true
       routes:
         - id: travel-service
-          uri: lb:http://TRAVEL-PLANS-SERVICE
+          uri: lb://travel-plans-service
           predicates:
             - Path=/api/v1/plans/**
+            - Method=GET
           filters:
-            - name: JwtAuthFilter
+            - JwtAuthFilter
         - id: auth-server
-          uri: lb:http://AUTHORIZATION-SERVER
+          uri: lb://authorization-server
           predicates:
             - Path=/auth/**
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-
-auth:
-  server:
-#    validate-token-url: http://authorization-server/auth/validate
-    validate-token-url: http://localhost:7070/auth/validate
+  application:
+    name: api-gateway
 
 server:
   port: 7070
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+auth:
+  server:
+    validate-token-url: http://authorization-server/auth/validate
