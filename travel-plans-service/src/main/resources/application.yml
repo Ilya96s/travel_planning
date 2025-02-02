@@ -6,8 +6,8 @@ spring:
       client:
         config:
           attraction-service:
-            connectTimeout: 10000  # Таймаут установки соединения (10 сек)
-            readTimeout: 60000  # Таймаут ожидания ответа (60 сек)
+            connectTimeout: 10000   # Таймаут установки соединения (10 сек)
+            readTimeout: 60000      # Таймаут ожидания ответа (60 сек)
             error-decoder: ru.jg.travelplans.handler.AttractionErrorDecoder
   datasource:
     url: jdbc:h2:mem:travel
@@ -30,6 +30,12 @@ spring:
       schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,circuitbreakerevents  # Чтобы был доступ к эндпоинтов актуатора нужно их открыть
+
 eureka:
   client:
     service-url:
@@ -41,3 +47,26 @@ server:
 application:
   config:
     attraction-url: http://attraction-service/api/v1/attractions
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      attractionCB:
+        failureRateThreshold: 50                  # 50% неудачных запросов - CB срабатывает
+        slowCallRateThreshold: 50                 # 50% медленных запросов - CB срабатывает
+        slowCallDurationThreshold: 2s             # Запрос дольше 2 сек считается медленным
+        slidingWindowType: count_based            # Окно ошибок основано на количестве запросов
+        slidingWindowSize: 10                     # Анализируем последние 10 запросов
+        minimumNumberOfCalls: 5                   # Минимум 5 вызовов перед изменением состояния
+        waitDurationInOpenState: 10s              # CB остается открытым 10 сек перед проверкой
+        permittedNumberOfCallsInHalfOpenState: 3  # 3 запроса в Half-Open перед закрытием
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        registerHealthIndicator: true             # Добавляет состояние CB в /actuator/health
+        event-consumer-buffer-size: 10            # Размер буфера событий
+    circuit-breaker-aspect-order: 1               # Порядок выполненеия аспектов
+  retry:
+    instances:
+      attractionCB:
+        maxAttempts: 3                            # Максимальное количество попыток
+        waitDuration: 30s                          # Время ожидания между попытками
+    retry-aspect-order: 2
