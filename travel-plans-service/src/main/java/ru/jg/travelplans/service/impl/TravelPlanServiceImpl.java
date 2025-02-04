@@ -19,7 +19,6 @@ public class TravelPlanServiceImpl implements TravelPlanService {
 
     private final TravelPlanMapper travelPlanMapper;
 
-
     private final AttractionOpenFeignClient attractionOpenFeignClient;
 
     private final TravelPlanRepository travelPlanRepository;

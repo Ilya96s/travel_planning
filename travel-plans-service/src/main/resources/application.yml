@@ -44,10 +44,6 @@ eureka:
 server:
   port: 8081
 
-application:
-  config:
-    attraction-url: http://attraction-service/api/v1/attractions
-
 resilience4j:
   circuitbreaker:
     instances:
@@ -63,10 +59,10 @@ resilience4j:
         automaticTransitionFromOpenToHalfOpenEnabled: true
         registerHealthIndicator: true             # Добавляет состояние CB в /actuator/health
         event-consumer-buffer-size: 10            # Размер буфера событий
-    circuit-breaker-aspect-order: 1               # Порядок выполненеия аспектов
+    circuit-breaker-aspect-order: 2               # Порядок выполненеия аспектов
   retry:
     instances:
       attractionCB:
         maxAttempts: 3                            # Максимальное количество попыток
         waitDuration: 30s                          # Время ожидания между попытками
-    retry-aspect-order: 2
+    retry-aspect-order: 1

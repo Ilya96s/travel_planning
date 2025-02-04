@@ -1,4 +1,9 @@
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://127.0.0.1:9090/realms/testRealm
   cloud:
     gateway:
       discovery:
@@ -6,17 +11,17 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
+        - id: attraction-service
+          uri: lb://attraction-service
+          predicates:
+            - Path=/api/v1/attractions/**
+            - Method=GET
         - id: travel-service
           uri: lb://travel-plans-service
           predicates:
             - Path=/api/v1/plans/**
             - Method=GET
-          filters:
-            - JwtAuthFilter
-        - id: auth-server
-          uri: lb://authorization-server
-          predicates:
-            - Path=/auth/**
+      default-filters: TokenRelay=
   application:
     name: api-gateway
 
@@ -31,3 +36,7 @@ eureka:
 auth:
   server:
     validate-token-url: http://authorization-server/auth/validate
+
+logging:
+  level:
+    org.springframework.security: DEBUG
