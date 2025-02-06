@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: admin-application
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:9090/realms/testRealm
+        registration:
+          keycloak:
+            client-id: admin-app
+            client-secret: ahbhNkfpyxOg8KvVVoS3cSyPtpQABiLb
+            scope:
+              - openid
+            authorization-grant-type: authorization_code
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8888
+
+logging:
+  level:
+    org.springframework.security: DEBUG

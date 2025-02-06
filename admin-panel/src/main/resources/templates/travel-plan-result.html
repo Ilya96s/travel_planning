@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Travel Plan Result</title>
+</head>
+<body>
+<h2>Travel Plan Details</h2>
+<p>ID: <span th:text="${travelPlan.planId}"></span></p>
+<p>User ID: <span th:text="${travelPlan.userId}"></span></p>
+<p>Attraction: <span th:text="${travelPlan.attraction}"></span></p>
+<p>Visit Date: <span th:text="${travelPlan.visitDate}"></span></p>
+<a href="/travel-plans">Search another plan</a>
+</body>
+</html>

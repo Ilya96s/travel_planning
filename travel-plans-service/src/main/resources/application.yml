@@ -1,4 +1,19 @@
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090/realms/testRealm
+      client:
+        registration:
+          travel-plan-service-client:
+            provider: keycloak
+            client-id: my-client
+            client-secret: vGng14JZzF4sKa5Zw0hAodViJAGwAIte
+            authorization-grant-type: client_credentials
+        provider:
+          keycloak:
+            token-uri: http://localhost:9090/realms/testRealm/protocol/openid-connect/token
   application:
     name: travel-plans-service
   cloud:
@@ -66,3 +81,7 @@ resilience4j:
         maxAttempts: 3                            # Максимальное количество попыток
         waitDuration: 30s                          # Время ожидания между попытками
     retry-aspect-order: 1
+
+logging:
+  level:
+    org.springframework.security: DEBUG
