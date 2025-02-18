@@ -1,4 +1,4 @@
-package ru.jg.travelplans.event;
+package com.example.kafkacore.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AttractionCreatedEvent {
+
+    private String attractionId;
 
     private String name;
 

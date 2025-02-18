@@ -1,7 +1,9 @@
 package ru.jg.travelplans.service.impl;
 
+import com.example.kafkacore.event.AttractionCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -9,7 +11,6 @@ import org.springframework.stereotype.Service;
 import ru.jg.travelplans.client.AttractionOpenFeignClient;
 import ru.jg.travelplans.dto.AttractionResponseDto;
 import ru.jg.travelplans.dto.TravelPlanResponseDto;
-import ru.jg.travelplans.event.AttractionCreatedEvent;
 import ru.jg.travelplans.exception.TravelPlanNotFoundException;
 import ru.jg.travelplans.mapper.TravelPlanMapper;
 import ru.jg.travelplans.model.TravelPlan;
@@ -17,6 +18,7 @@ import ru.jg.travelplans.repository.TravelPlanRepository;
 import ru.jg.travelplans.service.TravelPlanService;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -57,14 +59,22 @@ public class TravelPlanServiceImpl implements TravelPlanService {
     @Override
     public void createNewPlan(TravelPlanResponseDto travelPlanResponseDto) {
         //TODO save plan to db
+        String attractionId = UUID.randomUUID().toString();
 
         AttractionCreatedEvent attractionCreatedEvent =
-                new AttractionCreatedEvent(travelPlanResponseDto.getAttraction().name(),
+                new AttractionCreatedEvent(attractionId,travelPlanResponseDto.getAttraction().name(),
                         travelPlanResponseDto.getAttraction().city(),
                         travelPlanResponseDto.getAttraction().description());
 
+        ProducerRecord<String, Object> record = new ProducerRecord<>(
+                travelPlanRequestTopic,
+                attractionId,
+                attractionCreatedEvent
+        );
+        record.headers().add("attractionId", attractionId.getBytes());
+
         CompletableFuture<SendResult<String, Object>> future =
-                kafkaTemplate.send(travelPlanRequestTopic, attractionCreatedEvent);
+                kafkaTemplate.send(record);
 
         future.whenComplete((result, exception) -> {
             if (exception != null) {
