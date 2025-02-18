@@ -1,4 +1,17 @@
 spring:
+  kafka:
+    bootstrap-servers: localhost:29092
+    producer:
+      acks: all
+      properties:
+        enable:
+          idempotence: true
+        max:
+          in:
+            flight:
+              request:
+                per:
+                  connection: 5
   security:
     oauth2:
       resourceserver:
@@ -81,6 +94,9 @@ resilience4j:
         maxAttempts: 3                            # Максимальное количество попыток
         waitDuration: 30s                          # Время ожидания между попытками
     retry-aspect-order: 1
+
+travel-plan:
+  request-topic: attraction-created-event-topic
 
 logging:
   level:

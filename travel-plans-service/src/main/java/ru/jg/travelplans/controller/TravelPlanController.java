@@ -1,12 +1,16 @@
 package ru.jg.travelplans.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.jg.travelplans.dto.TravelPlanResponseDto;
 import ru.jg.travelplans.service.TravelPlanService;
@@ -40,4 +44,9 @@ public class TravelPlanController {
         return client.getAccessToken().getTokenValue();
     }
 
+    @PostMapping
+    public ResponseEntity<Void> createNewPlan(@RequestBody TravelPlanResponseDto travelPlanResponseDto) {
+        travelPlanService.createNewPlan(travelPlanResponseDto);
+        return ResponseEntity.ok().build();
+    }
 }
