@@ -5,6 +5,7 @@ spring:
       group-id: attraction-group
       properties:
         spring.json.trusted.packages: "*"
+      isolation-level: read_committed
   security:
     oauth2:
       resource-server:

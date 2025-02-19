@@ -12,6 +12,7 @@ spring:
               request:
                 per:
                   connection: 5
+        transaction-id-prefix: travel-plans-service-${random.value}-
   security:
     oauth2:
       resourceserver:
